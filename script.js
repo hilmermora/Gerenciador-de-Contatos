@@ -2,38 +2,51 @@ const inputNome = document.getElementById('nome');
 const inputEmail = document.getElementById('email');
 const inputCelular = document.getElementById('celular');
 const btnSalvar = document.getElementById('btnSalvar');
+const btnNovo = document.getElementById('btnNovo');
 const lista = document.getElementById('listaContatos');
 
 let indexEdicao = -1;
 
-function atualizarLista() {
+
+function actualizarLista() {
     let agenda = JSON.parse(localStorage.getItem('agenda')) || [];
     lista.innerHTML = ""; 
 
     agenda.forEach((contato, index) => {
-        // Cria o identificador de ordem (Ex: 01, 02, 03...)
         let ordem = (index + 1).toString().padStart(2, '0');
 
         lista.innerHTML += `
-            <div style="border: 1px solid #000; padding: 15px; margin-top: 15px; border-radius: 10px; background: rgba(255,255,255,0.4); position: relative;">
-                <span style="position: absolute; top: 10px; right: 15px; font-weight: bold; color: #666;">#${ordem}</span>
+            <div class="card-contato" style="border: 1px solid #ccc; padding: 15px; margin-top: 15px; border-radius: 10px; background: rgba(255,255,255,0.7); position: relative;">
+                <span style="position: absolute; top: 10px; right: 15px; font-weight: bold; color: #888;">#${ordem}</span>
                 
                 <p><strong>Nome:</strong> ${contato.nome}</p>
                 <p><strong>E-mail:</strong> ${contato.email || '---'}</p>
                 <p><strong>Celular:</strong> ${contato.celular}</p>
                 
                 <div style="margin-top: 10px;">
-                    <button onclick="prepararEdicao(${index})" style="background: #ffc107; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer;">Editar</button>
-                    <button onclick="remover(${index})" style="background: #dc3545; color: white; padding: 5px 10px; border: none; border-radius: 5px; margin-left: 10px; cursor: pointer;">Apagar</button>
+                    <button onclick="prepararEdicao(${index})" style="background: #ffc107; border: none; padding: 7px 12px; border-radius: 4px; cursor: pointer;">Editar</button>
+                    <button onclick="remover(${index})" style="background: #dc3545; color: white; border: none; padding: 7px 12px; border-radius: 4px; margin-left: 10px; cursor: pointer;">Apagar</button>
                 </div>
             </div>
         `;
     });
 }
 
+window.remover = function(index) {
+    const confirmar = confirm("¿Estás seguro de que deseas eliminar este contacto?");
+    
+    if (confirmar) {
+        let agenda = JSON.parse(localStorage.getItem('agenda')) || [];
+        agenda.splice(index, 1);
+        localStorage.setItem('agenda', JSON.stringify(agenda));
+        actualizarLista();
+    }
+};
+
+
 btnSalvar.onclick = function() {
-    if (inputNome.value === "" || inputCelular.value === "") {
-        alert("Preencha pelo menos Nome e Celular!");
+    if (inputNome.value.trim() === "" || inputCelular.value.trim() === "") {
+        alert("¡Nombre y Celular son obligatorios!");
         return;
     }
 
@@ -54,8 +67,9 @@ btnSalvar.onclick = function() {
 
     localStorage.setItem('agenda', JSON.stringify(agenda));
     limparCampos();
-    atualizarLista();
+    actualizarLista();
 };
+
 
 window.prepararEdicao = function(index) {
     let agenda = JSON.parse(localStorage.getItem('agenda')) || [];
@@ -70,13 +84,11 @@ window.prepararEdicao = function(index) {
     window.scrollTo(0, 0);
 };
 
-window.remover = function(index) {
-    if(confirm("Tem certeza que deseja apagar este contato?")) {
-        let agenda = JSON.parse(localStorage.getItem('agenda')) || [];
-        agenda.splice(index, 1);
-        localStorage.setItem('agenda', JSON.stringify(agenda));
-        atualizarLista();
-    }
+
+btnNovo.onclick = function() {
+    limparCampos();
+    indexEdicao = -1;
+    btnSalvar.innerText = "Salvar";
 };
 
 function limparCampos() {
@@ -85,4 +97,5 @@ function limparCampos() {
     inputCelular.value = "";
 }
 
-atualizarLista();
+
+actualizarLista();
