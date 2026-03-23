@@ -1,0 +1,15 @@
+{
+  "name": "gerenciador-de-contatos",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
