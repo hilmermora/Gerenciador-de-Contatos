@@ -56,3 +56,27 @@ npm test
 🧪 Exemplos de Testes realizados
 Criação com Sucesso: Verifica se o contato é criado e retorna status 201.
 Validação de Erro: Garante que a API retorne status 400 caso campos obrigatórios (como e-mail) não sejam enviados.
+
+Título: Rota DELETE /games/:id não remove o registro do banco de dados.
+
+Prioridade (P): Alta (P1).
+
+Severidade (S): Crítica (S1) - Função principal não funciona.
+
+Passos para Reproduzir:
+
+Criar um jogo via POST /games.
+
+Anotar o ID gerado.
+
+Chamar a rota DELETE /games/{id}.
+
+Chamar a rota GET /games.
+
+Resultado Esperado: O jogo com o ID deletado não deve constar na lista.
+
+Resultado Obtido: O jogo permanece na lista e a rota DELETE retornou status 200 indevidamente.
+
+Evidências: Print da tela do Postman mostrando o ID ainda presente após o delete.
+
+Ambiente: Localhost / Windows 11 / Node.js v20.
