@@ -1,35 +1,36 @@
-const request = require('supertest');
-const app = require('../../app');
+const express = require('express');
+const app = express();
 
-describe('Testes do Gerenciador de Contatos', () => {
+app.use(express.json()); 
 
-  
-  test('Deve criar um contato com sucesso', async () => {
-    const res = await request(app)
-      .post('/contatos')
-      .send({
-        nome: "Rodrigo Silva",
-        email: "rodrigo@email.com",
-        telefone: "1199999999"
-      });
+let games = []; 
 
-   
-    expect(res.statusCode).toBe(201);
-    
-   
-    expect(res.body.nome).toBe("Rodrigo Silva");
-    expect(res.body).toHaveProperty('id');
-  });
 
- 
-  test('Deve barrar a criação de contato sem email', async () => {
-    const res = await request(app)
-      .post('/contatos')
-      .send({ nome: "João Sem Email" });
-
-    
-    expect(res.statusCode).toBe(400);
-    expect(res.body.mensagem).toBe("Nome e Email são obrigatórios!");
-  });
-
+app.get('/games', (req, res) => {
+    res.status(200).json(games);
 });
+
+
+app.post('/games', (req, res) => {
+    const { nome, genero } = req.body;
+
+
+    if (!nome || !genero) {
+        return res.status(400).json({ mensagem: "Nome e gênero são obrigatórios" });
+    }
+
+    const novoJogo = { nome, genero };
+    games.push(novoJogo);
+
+    res.status(201).json(novoJogo);
+});
+
+
+module.exports = app;
+
+if (require.main === module) {
+    const PORT = 3000;
+    app.listen(PORT, () => {
+        console.log(`Servidor rodando em http://localhost:${PORT}`);
+    });
+}
